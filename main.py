@@ -66,7 +66,7 @@ async def working(message: Message):
     await message.answer(f"Установлено \"{message.text[3:]}\"")
     timer_ls = dict()
 
-@bot.on.chat_message(PeechatRule(), worker)
+@bot.on.chat_message(PeechatRule())
 async def print_handler(message: Message):
     if datetime.now().timestamp() - timer[message.chat_id] > 100:
         await message.reply(message="Пиши мне в лсь!")
