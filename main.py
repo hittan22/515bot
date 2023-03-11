@@ -15,7 +15,7 @@ worker = True
 class PeechatRule(ABCRule[Message]):
     async def check(self, event: Message) -> bool:
         global worker
-        return "печат" in event.text.lower() and event.from_id not in ignore_ids and worker
+        return ("печат" in event.text.lower() or "скан" in event.text.lower()) and event.from_id not in ignore_ids and worker and "цвет" not in event.text.lower()
 
 
 class AdminRule(ABCRule[Message]):
