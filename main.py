@@ -1,9 +1,11 @@
 from vkbottle.dispatch.rules import ABCRule
 from vkbottle.bot import Bot, Message
 from datetime import datetime
-from asyncio import *
+import asyncio
+from sys import argv
 
 adm_ids = [348406748, 530160180]
+ignore_ids = [630090001, 348406748, 530160180, 223964340]
 timer = dict({3:0, 4:0, 5:0})
 timer_ls = dict()
 task = 0
@@ -12,7 +14,8 @@ worker = True
 
 class PeechatRule(ABCRule[Message]):
     async def check(self, event: Message) -> bool:
-        return "печат" in event.text.lower()
+        global worker
+        return "печат" in event.text.lower() and event.from_id not in ignore_ids and worker
 
 
 class AdminRule(ABCRule[Message]):
@@ -23,10 +26,10 @@ class AdminRule(ABCRule[Message]):
 async def typing():
     while True:
         await bot.api.messages.set_activity(type='typing', peer_id=2e9+5)
-        await sleep(4)
+        await asyncio.sleep(4)
 
 
-bot = Bot(token="not.hehe")
+bot = Bot(token=f"{argv[1]}")
 bot.labeler.vbml_ignore_case = True
 
 
@@ -39,7 +42,7 @@ async def typer(message: Message):
         else:
             raise Exception('typing successful')
     except:
-        task = create_task(typing())
+        task = asyncio.create_task(typing())
         await message.answer("Тайпинг установлен")
 
 
@@ -63,7 +66,7 @@ async def working(message: Message):
     await message.answer(f"Установлено \"{message.text[3:]}\"")
     timer_ls = dict()
 
-@bot.on.chat_message(PeechatRule())
+@bot.on.chat_message(PeechatRule(), worker)
 async def print_handler(message: Message):
     if datetime.now().timestamp() - timer[message.chat_id] > 100:
         await message.reply(message="Пиши мне в лсь!")
