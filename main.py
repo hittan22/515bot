@@ -5,7 +5,7 @@ import asyncio
 from sys import argv
 
 adm_ids = [348406748, 530160180]
-ignore_ids = [630090001, 348406748, 530160180, 223964340]
+ignore_ids = [630090001, 348406748, 183933927, 223964340]
 timer = dict({3:0, 4:0, 5:0})
 timer_ls = dict()
 task = 0
@@ -14,7 +14,6 @@ worker = True
 
 class PeechatRule(ABCRule[Message]):
     async def check(self, event: Message) -> bool:
-        global worker
         return ("печат" in event.text.lower() or "скан" in event.text.lower()) and event.from_id not in ignore_ids and worker and "цвет" not in event.text.lower()
 
 
